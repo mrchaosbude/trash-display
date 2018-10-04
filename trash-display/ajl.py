@@ -1,6 +1,6 @@
-import requests
 from bs4 import BeautifulSoup
 import logging
+import urllib.request as requests
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -19,7 +19,7 @@ class ajldates():
         """
 
         listofcitys = dict()
-        data1 = requests.get("https://www.ajl-mbh.de/abfallkalender/entsorgungstermine-ajl").text        
+        data1 = requests.urlopen("https://www.ajl-mbh.de/abfallkalender/entsorgungstermine-ajl").read()        
         soup = BeautifulSoup(data1, "lxml")
         logging.debug('[+] Start Scrapyng Citys')
         for item in soup.find_all("a", {"class": "stadtbutton"}):
@@ -29,15 +29,16 @@ class ajldates():
         logging.debug('[+] Check for Street')
         listofstreets = dict()
         try:
-            data2 = requests.get(listofcitys[city.casefold()]).text   
+            data2 = requests.urlopen(listofcitys[city.casefold()]).read()   
         except:
                 for key, _ in listofcitys.items() :
                     print (key)
-                raise Exception("Plese chose a city")                 
+                raise Exception("Plese chose the right city")                 
         soup2 = BeautifulSoup(data2, "lxml")
         t = soup2.find(id="street")
         if t == None:
             logging.debug('[+] No Street needet')
+            logging.debug('[+] the Url= '+ listofcitys[city.casefold()] + "&printview=1")
             return listofcitys[city.casefold()] + "&printview=1"            
         
         for item2 in t.find_all("option"):
@@ -47,13 +48,13 @@ class ajldates():
             for key, _ in listofstreets.items() :
                 print (key)
             raise Exception('You Need add a street name')
+        logging.debug('[+] the Url= ' + listofcitys[city.casefold()] + "&street=" + listofstreets[street.casefold()] + "&printview=1")
         return listofcitys[city.casefold()] + "&street=" + listofstreets[street.casefold()] + "&printview=1"
 
-        
-        
-    
+#    def getDates(self, url):
+#        page = 
     
 if __name__ == "__main__":
     d = ajldates()
-    p = d.getCityUrl("müzel", street="gorkistrasse")
-    print (p)
+    p = d.getCityUrl("mützel", street="gorkistrasse")
+    #print (p)
