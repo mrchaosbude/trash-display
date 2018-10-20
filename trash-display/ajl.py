@@ -33,7 +33,7 @@ class ajldates():
         logging.debug('[+] Finisch Scraping Citys')
         
         logging.debug('[+] Check for Street')
-        listofstreets = dict()
+        listofstreets = dict()        
         try:
             data2 = requests.urlopen(listofcitys[city.casefold()]).read()   
         except:
@@ -81,17 +81,18 @@ class ajldates():
                 return textlist
             return datetimelist
 
-        gelbeT = gettonnes("cat cat-gelb", soup)
-        papierT = gettonnes("cat cat-papier", soup)
-        bioT = gettonnes("cat cat-bio", soup)
-        SchwartzeT = gettonnes("cat cat-rest", soup)
         logging.debug('[+] Finisch  Return the dict')
-        return {"Gelbe_Tonne" : gelbeT, "Papiertonne" : papierT, "Biotonne" : bioT, "Schwarze Tonne" : SchwartzeT}
+        return {
+            "Gelbe_Tonne" : gettonnes("cat cat-gelb", soup),
+            "Papiertonne" : gettonnes("cat cat-papier", soup), 
+            "Biotonne" : gettonnes("cat cat-bio", soup), 
+            "Schwarze Tonne" : gettonnes("cat cat-rest", soup)
+            }
 
     
 if __name__ == "__main__":
     d = ajldates()
     #p = d.getCityUrl("mützel", street="gorkistrasse")
-    p = d.run("mützel", street="gorkistrasse")
+    p = d.run("Mützel")
     #b = d.getDates("https://www.ajl-mbh.de/abfallkalender/entsorgungstermine-ajl?year=2018&town=154&street=265&printview=1")
     print(p)
